@@ -51,22 +51,7 @@ $(warning LSE atomics not supported by binutils)
   endif
 endif
 
-ifeq ($(CONFIG_COMPAT_VDSO), y)
-  CROSS_COMPILE_ARM32 ?= $(CONFIG_CROSS_COMPILE_ARM32:"%"=%)
-
-  # Check that the user has provided a valid prefix for the 32-bit toolchain.
-  # To prevent selecting the system $(cc-name) by default, the prefix is not
-  # allowed to be empty, unlike CROSS_COMPILE. In the unlikely event that the
-  # system $(cc-name) is actually the 32-bit ARM compiler to be used, the
-  # variable can be set to the dirname (e.g. CROSS_COMPILE_ARM32=/usr/bin/).
-  # Note: this Makefile is read both before and after regenerating the config
-  # (if needed). Any warning appearing before the config has been regenerated
-  # should be ignored. If the error is triggered and you set
-  # CONFIG_CROSS_COMPILE_ARM32, set CROSS_COMPILE_ARM32 to an appropriate value
-  # when invoking make and fix CONFIG_CROSS_COMPILE_ARM32.
-  ifeq ($(CROSS_COMPILE_ARM32),)
-    $(error CROSS_COMPILE_ARM32 not defined or empty, the compat vDSO will not be built)
-  else ifeq ($(cc-name),clang)
+ ifeq ($(cc-name),clang)
     export CLANG_TRIPLE_ARM32 ?= $(CROSS_COMPILE_ARM32)
     export CLANG_TARGET_ARM32 := --target=$(notdir $(CLANG_TRIPLE_ARM32:%-=%))
     export CONFIG_VDSO32 := y
